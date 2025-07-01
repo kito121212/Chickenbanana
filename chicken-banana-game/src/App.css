@@ -1,0 +1,91 @@
+.container {
+  text-align: center;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  padding: 20px;
+}
+
+.scores {
+  margin-bottom: 20px;
+  font-size: 18px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(6, 100px);
+  gap: 6px;
+  justify-content: center;
+  margin: 20px auto;
+}
+
+.square {
+  width: 100px;
+  height: 100px;
+  position: relative;
+}
+
+.tile-cover {
+  width: 100%;
+  height: 100%;
+  background-color: lightgray;
+  background-size: cover;
+  background-position: center;
+  cursor: pointer;
+  border-radius: 8px;
+  transition: transform 0.2s ease, opacity 0.3s ease;
+}
+
+.tile-cover:hover {
+  opacity: 0.85;
+  transform: scale(1.02);
+}
+
+.winner-message {
+  margin-top: 20px;
+  font-size: 24px;
+  color: #4caf50;
+  font-weight: bold;
+}
+
+.current-player {
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.start-button,
+.restart-button {
+  padding: 10px 24px;
+  background-color: #008CBA;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.start-button:hover,
+.restart-button:hover {
+  background-color: #007299;
+}
+
+.restart-button:disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.wrong-tile {
+  animation: shake 0.5s;
+  box-shadow: 0 0 10px red;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-5px); }
+  40%, 80% { transform: translateX(5px); }
+}
+
+.shake {
+  animation: shake 0.5s;
+}
