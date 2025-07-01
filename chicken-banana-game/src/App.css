@@ -38,7 +38,9 @@
   opacity: 0.85;
   transform: scale(1.02);
 }
-
+.tile-cover.flipped {
+  transform: rotateY(180deg);
+}
 .winner-message {
   margin-top: 20px;
   font-size: 24px;
@@ -88,4 +90,9 @@
 
 .shake {
   animation: shake 0.5s;
+}
+
+.flip {
+  transform: rotateY(180deg);
+  transition: transform 0.6s;
 }

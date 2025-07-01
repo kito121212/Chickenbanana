@@ -109,9 +109,10 @@ function App() {
         {images.map((tile, index) => (
           <div key={index} className="square">
             <div
-              className={`tile-cover ${wrongPickEffect && clicked[index] && images[index] !== currentPlayer ? 'wrong-tile' : ''}`}
+              className={`tile-cover  ${clicked[index] ? "flipped" : ""} ${wrongPickEffect && clicked[index] && images[index] !== currentPlayer ? 'wrong-tile' : ''}`}
               onClick={() => handleClick(index)}
               style={{
+
                 backgroundColor: clicked[index] ? 'transparent' : 'lightgray',
                 backgroundImage: clicked[index]
                   ? `url(${tile === 'banana' ? imageUrls[0] : imageUrls[1]})`
