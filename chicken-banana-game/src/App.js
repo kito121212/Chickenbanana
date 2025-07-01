@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
-import './App.css';
+import React, { useEffect, useState } from "react";
+import "./App.css";
 
 // Chicken and Banana image URLs
 const imageUrls = [
-  'https://thumbs.dreamstime.com/b/bunch-bananas-6175887.jpg?w=768', // Banana
-  'https://thumbs.dreamstime.com/z/full-body-brown-chicken-hen-standing-isolated-white-backgroun-background-use-farm-animals-livestock-theme-49741285.jpg?ct=jpeg', // Chicken
+  "https://thumbs.dreamstime.com/b/bunch-bananas-6175887.jpg?w=768", // Banana
+  "https://thumbs.dreamstime.com/z/full-body-brown-chicken-hen-standing-isolated-white-backgroun-background-use-farm-animals-livestock-theme-49741285.jpg?ct=jpeg", // Chicken
 ];
 
 function getRandomImages() {
-  const tiles = [...Array(18).fill('banana'), ...Array(18).fill('chicken')];
+  const tiles = [...Array(18).fill("banana"), ...Array(18).fill("chicken")];
   for (let i = tiles.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     [tiles[i], tiles[j]] = [tiles[j], tiles[i]];
@@ -19,8 +19,8 @@ function getRandomImages() {
 function App() {
   const [images, setImages] = useState(getRandomImages());
   const [clicked, setClicked] = useState(Array(36).fill(false));
-  const [currentPlayer, setCurrentPlayer] = useState('');
-  const [winner, setWinner] = useState('');
+  const [currentPlayer, setCurrentPlayer] = useState("");
+  const [winner, setWinner] = useState("");
   const [chickenScore, setChickenScore] = useState(0);
   const [bananaScore, setBananaScore] = useState(0);
   const [isGameStarted, setIsGameStarted] = useState(false);
@@ -41,16 +41,16 @@ function App() {
 
     // Update score if correct
     if (isCorrect) {
-      if (currentPlayer === 'chicken') {
+      if (currentPlayer === "chicken") {
         setChickenScore((prev) => {
           const newScore = prev + 1;
-          if (newScore >= 10) setWinner('🐔 Chicken Player wins!');
+          if (newScore >= 10) setWinner("🐔 Chicken Player wins!");
           return newScore;
         });
       } else {
         setBananaScore((prev) => {
           const newScore = prev + 1;
-          if (newScore >= 10) setWinner('🍌 Banana Player wins!');
+          if (newScore >= 10) setWinner("🍌 Banana Player wins!");
           return newScore;
         });
       }
@@ -59,7 +59,7 @@ function App() {
       setWrongPickEffect(true);
       setTimeout(() => {
         setWrongPickEffect(false);
-        setCurrentPlayer((prev) => (prev === 'chicken' ? 'banana' : 'chicken'));
+        setCurrentPlayer((prev) => (prev === "chicken" ? "banana" : "chicken"));
       }, 1000);
     }
   };
@@ -70,19 +70,19 @@ function App() {
   };
 
   const startGame = () => {
-    const randomPlayer = Math.random() < 0.5 ? 'chicken' : 'banana';
+    const randomPlayer = Math.random() < 0.5 ? "chicken" : "banana";
     setCurrentPlayer(randomPlayer);
     setIsGameStarted(true);
     resetBoard();
-    setWinner('');
+    setWinner("");
   };
 
   const handleRestart = () => {
     setChickenScore(0);
     setBananaScore(0);
-    setWinner('');
+    setWinner("");
     setIsGameStarted(false);
-    setCurrentPlayer('');
+    setCurrentPlayer("");
     resetBoard();
   };
 
@@ -100,8 +100,8 @@ function App() {
           Start Game
         </button>
       ) : (
-        <h3 className={wrongPickEffect ? 'shake' : ''}>
-          🔄 {currentPlayer === 'chicken' ? 'Chicken' : 'Banana'} Player's Turn
+        <h3 className={`${wrongPickEffect ? "shake wrong-pick" : ""} `}>
+          🔄 {currentPlayer === "chicken" ? "Chicken" : "Banana"} Player's Turn
         </h3>
       )}
 
@@ -109,15 +109,20 @@ function App() {
         {images.map((tile, index) => (
           <div key={index} className="square">
             <div
-              className={`tile-cover  ${clicked[index] ? "flipped" : ""} ${wrongPickEffect && clicked[index] && images[index] !== currentPlayer ? 'wrong-tile' : ''}`}
+              className={`tile-cover  ${clicked[index] ? "flipped" : ""} ${
+                wrongPickEffect &&
+                clicked[index] &&
+                images[index] !== currentPlayer
+                  ? "wrong-tile"
+                  : ""
+              }`}
               onClick={() => handleClick(index)}
               style={{
-
-                backgroundColor: clicked[index] ? 'transparent' : 'lightgray',
+                backgroundColor: clicked[index] ? "transparent" : "lightgray",
                 backgroundImage: clicked[index]
-                  ? `url(${tile === 'banana' ? imageUrls[0] : imageUrls[1]})`
-                  : 'none',
-                backgroundSize: 'cover',
+                  ? `url(${tile === "banana" ? imageUrls[0] : imageUrls[1]})`
+                  : "none",
+                backgroundSize: "cover",
               }}
             />
           </div>
