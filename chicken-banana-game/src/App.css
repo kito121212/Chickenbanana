@@ -1,104 +1,169 @@
-.container {
-  text-align: center;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  padding: 20px;
+/* Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
-.scores {
+body {
+  font-family: 'Poppins', sans-serif;
+  background: linear-gradient(135deg, #1e1e2f, #121218);
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  padding: 30px 10px;
+  color: #e0e0e0;
+}
+
+.container {
+  background: rgba(40, 40, 55, 0.5);
+  border-radius: 16px;
+  padding: 30px 20px;
+  max-width: 900px;
+  width: 100%;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.35);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+h1 {
+  font-size: 2.5rem;
+  font-weight: 600;
+  margin-bottom: 15px;
+  color: #ffffff;
+  text-shadow: 1px 1px 3px #000;
+}
+
+.scoreboard {
+  display: flex;
+  justify-content: center;
+  gap: 40px;
   margin-bottom: 20px;
+}
+
+.player {
   font-size: 18px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 12px 24px;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: 500;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+}
+
+.turn-label {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin-bottom: 15px;
+}
+
+.turn-label.wrong {
+  color: #ff4d4d;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(6, 100px);
-  gap: 6px;
+  grid-template-columns: repeat(6, 90px);
+  gap: 12px;
   justify-content: center;
-  margin: 20px auto;
+  margin-bottom: 25px;
 }
 
 .square {
-  width: 100px;
-  height: 100px;
+  width: 90px;
+  height: 90px;
   position: relative;
 }
 
 .tile-cover {
+  position: relative;
   width: 100%;
   height: 100%;
-  background-color: lightgray;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  background-color: rgba(255, 255, 255, 0.07);
   background-size: cover;
   background-position: center;
-  cursor: pointer;
-  border-radius: 8px;
-  transition: transform 0.2s ease, opacity 0.3s ease;
+  overflow: hidden;
 }
+
 
 .tile-cover:hover {
-  opacity: 0.85;
-  transform: scale(1.02);
+  transform: scale(1.08);
 }
+
 .tile-cover.flipped {
-  transform: rotateY(180deg);
-}
-.winner-message {
-  margin-top: 20px;
-  font-size: 24px;
-  color: #4caf50;
-  font-weight: bold;
+  background-color: transparent;
 }
 
-.current-player {
-  margin-top: 10px;
-  font-size: 20px;
-  font-weight: bold;
-}
-
-.start-button,
-.restart-button {
-  padding: 10px 24px;
-  background-color: #008CBA;
-  color: white;
-  border: none;
+.tile-number {
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 12px;
+  background-color: rgba(0, 0, 0, 0.75); /* Darker for contrast */
+  color: #fff;
+  padding: 2px 6px;
   border-radius: 6px;
-  cursor: pointer;
-  margin-top: 20px;
+  z-index: 2;
+  font-weight: bold;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
+}
+
+
+.start-btn,
+.restart-btn {
+  padding: 12px 28px;
   font-size: 16px;
-  transition: background-color 0.3s ease;
+  margin: 10px;
+  border: none;
+  border-radius: 10px;
+  background-color: #00b894;
+  color: #fff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
 }
 
-.start-button:hover,
-.restart-button:hover {
-  background-color: #007299;
+.restart-btn {
+  background-color: #d63031;
 }
 
-.restart-button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
+.start-btn:hover,
+.restart-btn:hover {
+  background-color: #0984e3;
 }
 
-
-@keyframes shake {
-  0%, 100% { transform: translateX(0); }
-  20%, 60% { transform: translateX(-5px); }
-  40%, 80% { transform: translateX(5px); }
+.winner {
+  font-size: 24px;
+  font-weight: 700;
+  color: #00ff95;
+  margin-top: 20px;
+  text-shadow: 1px 1px 3px #000;
 }
 
-.shake {
-  animation: shake 0.5s;
-}
+/* Responsive */
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: repeat(4, 70px);
+    gap: 10px;
+  }
 
-.flip {
-  transform: rotateY(180deg);
-  transition: transform 0.6s;
-}
-.wrong-tile {
-    background-color: red;
-    opacity: 0.1;
-   border: 2px solid red;
-  border-radius: 25px;
-}
-.wrong-pick {
-  color: red;
+  .square {
+    width: 70px;
+    height: 70px;
+  }
 
+  .tile-number {
+    font-size: 10px;
+  }
+
+  .scoreboard {
+    flex-direction: column;
+    gap: 10px;
+  }
 }

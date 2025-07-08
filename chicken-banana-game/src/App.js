@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
-// Chicken and Banana image URLs
-const imageUrls = [
-  "https://thumbs.dreamstime.com/b/bunch-bananas-6175887.jpg?w=768", // Banana
-  "https://thumbs.dreamstime.com/z/full-body-brown-chicken-hen-standing-isolated-white-backgroun-background-use-farm-animals-livestock-theme-49741285.jpg?ct=jpeg", // Chicken
-];
+const imageUrls = {
+  banana: "https://thumbs.dreamstime.com/b/bunch-bananas-6175887.jpg?w=768",
+  chicken: "https://thumbs.dreamstime.com/z/full-body-brown-chicken-hen-standing-isolated-white-backgroun-background-use-farm-animals-livestock-theme-49741285.jpg?ct=jpeg",
+};
 
 function getRandomImages() {
   const tiles = [...Array(18).fill("banana"), ...Array(18).fill("chicken")];
@@ -19,125 +18,119 @@ function getRandomImages() {
 function App() {
   const [images, setImages] = useState(getRandomImages());
   const [clicked, setClicked] = useState(Array(36).fill(false));
-  const [currentPlayer, setCurrentPlayer] = useState("");
+  const [revealed, setRevealed] = useState(Array(36).fill(false));
+  const [selectedIndex, setSelectedIndex] = useState(null);
+  const [scores, setScores] = useState({ chicken: 0, banana: 0 });
   const [winner, setWinner] = useState("");
-  const [chickenScore, setChickenScore] = useState(0);
-  const [bananaScore, setBananaScore] = useState(0);
   const [isGameStarted, setIsGameStarted] = useState(false);
-  const [wrongPickEffect, setWrongPickEffect] = useState(false);
+  const [playerRole, setPlayerRole] = useState(null);
 
-  const handleClick = (index) => {
-    if (!isGameStarted || clicked[index] || winner) return;
-
-    const tile = images[index];
-    const isCorrect = currentPlayer === tile;
-
-    // Reveal the tile
-    setClicked((prev) => {
-      const newClicked = [...prev];
-      newClicked[index] = true;
-      return newClicked;
-    });
-
-    // Update score if correct
-    if (isCorrect) {
-      if (currentPlayer === "chicken") {
-        setChickenScore((prev) => {
-          const newScore = prev + 1;
-          if (newScore >= 10) setWinner("🐔 Chicken Player wins!");
-          return newScore;
-        });
-      } else {
-        setBananaScore((prev) => {
-          const newScore = prev + 1;
-          if (newScore >= 10) setWinner("🍌 Banana Player wins!");
-          return newScore;
-        });
-      }
-    } else {
-      // Incorrect choice - trigger visual effect and switch player
-      setWrongPickEffect(true);
-      setTimeout(() => {
-        setWrongPickEffect(false);
-        setCurrentPlayer((prev) => (prev === "chicken" ? "banana" : "chicken"));
-      }, 1000);
-    }
+  const handleTileClick = (index) => {
+    if (clicked[index] || revealed[index] || winner || selectedIndex !== null) return;
+    setSelectedIndex(index);
   };
 
-  const resetBoard = () => {
-    setImages(getRandomImages());
-    setClicked(Array(36).fill(false));
+  const handleGuess = (choice) => {
+    if (selectedIndex === null || winner) return;
+
+    const actual = images[selectedIndex];
+    const newRevealed = [...revealed];
+    const newClicked = [...clicked];
+    newRevealed[selectedIndex] = true;
+    newClicked[selectedIndex] = true;
+
+    setRevealed(newRevealed);
+    setClicked(newClicked);
+
+    if (choice === actual) {
+      const newScores = { ...scores };
+      newScores[choice]++;
+      setScores(newScores);
+
+      const maxScore = Math.max(newScores.chicken, newScores.banana);
+      if (maxScore >= 18) {
+        const winnerPlayer = playerRole === choice ? "Player 1" : "Player 2";
+        setWinner(`${winnerPlayer} wins by completing their tiles!`);
+      }
+    } else {
+      const mistakePlayer = playerRole === "chicken" ? "Player 1" : "Player 2";
+      const opponent = mistakePlayer === "Player 1" ? "Player 2" : "Player 1";
+      setWinner(`${opponent} wins! ${mistakePlayer} made a mistake.`);
+    }
+
+    setSelectedIndex(null);
   };
 
   const startGame = () => {
-    const randomPlayer = Math.random() < 0.5 ? "chicken" : "banana";
-    setCurrentPlayer(randomPlayer);
-    setIsGameStarted(true);
-    resetBoard();
+    setImages(getRandomImages());
+    setClicked(Array(36).fill(false));
+    setRevealed(Array(36).fill(false));
+    setScores({ chicken: 0, banana: 0 });
     setWinner("");
+    setIsGameStarted(true);
+    setSelectedIndex(null);
   };
 
-  const handleRestart = () => {
-    setChickenScore(0);
-    setBananaScore(0);
-    setWinner("");
-    setIsGameStarted(false);
-    setCurrentPlayer("");
-    resetBoard();
+  const choosePlayer = (role) => {
+    setPlayerRole(role);
+    startGame();
   };
 
   return (
     <div className="container">
-      <h1>Chicken Banana Game - Minesweeper!</h1>
-
-      <div className="scores">
-        <p>🐔 Chicken Score: {chickenScore}</p>
-        <p>🍌 Banana Score: {bananaScore}</p>
-      </div>
+      <h1>🐔 Chicken vs Banana 🍌</h1>
 
       {!isGameStarted ? (
-        <button className="start-button" onClick={startGame}>
-          Start Game
-        </button>
+        <div className="choose-player">
+          <h2>Choose your side:</h2>
+          <button className="start-btn" onClick={() => choosePlayer("chicken")}>
+            I am Player 1
+          </button>
+          <button className="start-btn" onClick={() => choosePlayer("banana")}>
+            I am Player 2
+          </button>
+        </div>
       ) : (
-        <h3 className={`${wrongPickEffect ? "shake wrong-pick" : ""} `}>
-          🔄 {currentPlayer === "chicken" ? "Chicken" : "Banana"} Player's Turn
-        </h3>
-      )}
-
-      <div className="grid">
-        {images.map((tile, index) => (
-          <div key={index} className="square">
-            <div
-              className={`tile-cover  ${clicked[index] ? "flipped" : ""} ${
-                wrongPickEffect &&
-                clicked[index] &&
-                images[index] !== currentPlayer
-                  ? "wrong-tile"
-                  : ""
-              }`}
-              onClick={() => handleClick(index)}
-              style={{
-                backgroundColor: clicked[index] ? "transparent" : "lightgray",
-                backgroundImage: clicked[index]
-                  ? `url(${tile === "banana" ? imageUrls[0] : imageUrls[1]})`
-                  : "none",
-                backgroundSize: "cover",
-              }}
-            />
+        <>
+          <div className="grid">
+            {images.map((tile, index) => (
+              <div key={index} className="square">
+                <div
+                  className={`tile-cover ${revealed[index] ? "flipped" : ""} ${selectedIndex === index ? "selected" : ""}`}
+                  onClick={() => handleTileClick(index)}
+                  style={{
+                    backgroundColor: revealed[index] ? "transparent" : "#bbb",
+                    backgroundImage: revealed[index] ? `url(${imageUrls[tile]})` : "none",
+                    backgroundSize: "cover",
+                    backgroundPosition: "center",
+                  }}
+                >
+                  <div className="tile-number">{index + 1}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {winner && <h2 className="winner-message">{winner}</h2>}
+          {selectedIndex !== null && !winner && (
+            <div className="guess-buttons">
+              <button onClick={() => handleGuess("chicken")} className="start-btn">
+                I pick Chicken 🐔
+              </button>
+              <button onClick={() => handleGuess("banana")} className="start-btn">
+                I pick Banana 🍌
+              </button>
+            </div>
+          )}
 
-      <button className="restart-button" onClick={handleRestart}>
-        Restart Full Game
-      </button>
+          {winner && <h2 className="winner">{winner}</h2>}
+
+          <button className="restart-btn" onClick={startGame}>
+            Restart Game
+          </button>
+        </>
+      )}
     </div>
   );
 }
 
 export default App;
-
-//sadfsaasdfsadfad
